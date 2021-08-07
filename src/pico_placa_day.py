@@ -9,3 +9,10 @@ class PicoPlacaDay:
         self.day_name = day_name
         self.day_number = day_number
         self.license_plate_digits = license_plate_digits
+
+    def print_details(self):
+        print('Day of the week: ' + self.day_name)
+        if len(self.license_plate_digits) > 0:
+            print('License plates ending {0} cannot drive'.format(self.license_plate_digits))
+        else:
+            print('All license plates can drive')
