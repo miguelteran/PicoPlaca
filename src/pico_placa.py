@@ -1,8 +1,11 @@
 import re
 from time import strptime
-from datetime import date
+from datetime import datetime
 from src.pico_placa_day import PicoPlacaDay
 
+
+# Format to parse the date string
+DATE_FORMAT = '%Y-%m-%d'
 
 # Format to parse the time string
 TIME_FORMAT = '%H:%M:%S'
@@ -100,7 +103,7 @@ Validates user input and throw exceptions if they are invalid
 def validate_arguments(license_plate_arg, date_arg, time_arg):
     
     try:
-        parsed_date = date.fromisoformat(date_arg)
+        parsed_date = datetime.strptime(date_arg, DATE_FORMAT)
     except Exception:
         raise Exception(INVALID_DATE_MESSAGE)
 

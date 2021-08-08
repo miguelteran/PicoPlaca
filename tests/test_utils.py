@@ -1,8 +1,8 @@
 import time
 import string
 import random
-from datetime import date, timedelta
-from src.pico_placa import TIME_FORMAT, DIGITS_PER_DAY
+from datetime import datetime, timedelta
+from src.pico_placa import DATE_FORMAT, TIME_FORMAT, DIGITS_PER_DAY
 
 
 DAY_START_TIME = time.strptime('00:00:00', TIME_FORMAT)
@@ -38,14 +38,14 @@ def get_random_date(with_restrictions=True):
     random_date = generate_random_date()
     if (with_restrictions and random_date.weekday() in days_with_restrictions) or \
         (not with_restrictions and random_date.weekday() in days_without_restrictions):
-        return random_date.isoformat()
+        return random_date.strftime(DATE_FORMAT)
     else:
         return get_random_date(with_restrictions)
 
 
 def generate_random_date():
-    start = date.fromisoformat('1970-01-01')
-    end = date.fromisoformat('2050-12-31')
+    start = datetime.strptime('1970-01-01', DATE_FORMAT)
+    end = datetime.strptime('2050-12-31', DATE_FORMAT)
     delta = end - start
     return start + timedelta(random.randrange(delta.days))
 
@@ -59,13 +59,13 @@ def get_days_without_driving_restrictions():
 
 
 def generate_license_plate_that_cannot_drive(date_string):
-    not_allowed_digits = DIGITS_PER_DAY[date.fromisoformat(date_string).weekday()]
+    not_allowed_digits = DIGITS_PER_DAY[datetime.strptime(date_string, DATE_FORMAT).weekday()]
     last_digit = random.choice(not_allowed_digits) if len(not_allowed_digits) > 0 else random.choice(string.digits)
     return generate_random_license_plate(last_digit)
 
 
 def generate_license_plate_that_can_drive(date_string):
-    not_allowed_digits = DIGITS_PER_DAY[date.fromisoformat(date_string).weekday()]
+    not_allowed_digits = DIGITS_PER_DAY[datetime.strptime(date_string, DATE_FORMAT).weekday()]
     digits = list(filter(lambda x: x not in not_allowed_digits, range(10)))
     return generate_random_license_plate(random.choice(digits)) 
 
