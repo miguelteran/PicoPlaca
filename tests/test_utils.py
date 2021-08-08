@@ -28,7 +28,7 @@ def get_random_date_without_driving_restrictions():
     return get_random_date(False)
 
 
-def get_random_date(with_restrictions):
+def get_random_date(with_restrictions=True):
     days_with_restrictions = get_days_with_driving_restrictions()
     days_without_restrictions = get_days_without_driving_restrictions()
     if (with_restrictions and len(days_with_restrictions) == 0) or \
