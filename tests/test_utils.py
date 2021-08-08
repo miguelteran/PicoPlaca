@@ -28,16 +28,27 @@ def get_random_date_without_driving_restrictions():
     return get_random_date(False)
 
 
+"""
+Returns an empty string if it cannot satisfy the "with_restrictions" parameter
+"""
 def get_random_date(with_restrictions=True):
     days_with_restrictions = get_days_with_driving_restrictions()
     days_without_restrictions = get_days_without_driving_restrictions()
     if (with_restrictions and len(days_with_restrictions) == 0) or \
         (not with_restrictions and len(days_without_restrictions) == 0):
         return ''
+    else:
+        return get_random_date_recursive(with_restrictions)
 
+
+"""
+Returns a randomly generated date. 
+Recurses until it produces a date that satisfies the "with_restrictions" parameter. 
+"""
+def get_random_date_recursive(with_restrictions):
     random_date = generate_random_date()
-    if (with_restrictions and random_date.weekday() in days_with_restrictions) or \
-        (not with_restrictions and random_date.weekday() in days_without_restrictions):
+    if (with_restrictions and random_date.weekday() in get_days_with_driving_restrictions()) or \
+        (not with_restrictions and random_date.weekday() in get_days_without_driving_restrictions()):
         return random_date.strftime(DATE_FORMAT)
     else:
         return get_random_date(with_restrictions)
