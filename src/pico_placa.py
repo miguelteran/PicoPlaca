@@ -1,7 +1,6 @@
-from os import pardir
-from time import strptime
-from datetime import datetime, date
 import re
+from time import strptime
+from datetime import date
 from src.pico_placa_day import PicoPlacaDay
 
 
@@ -46,6 +45,11 @@ END_TIME_FIRST_SHIFT = strptime(END_FIRST_SHIFT, TIME_FORMAT)
 START_TIME_SECOND_SHIFT = strptime(START_SECOND_SHIFT, TIME_FORMAT)
 END_TIME_SECOND_SHIFT = strptime(END_SECOND_SHIFT, TIME_FORMAT)
 
+# Exception messages
+INVALID_DATE_MESSAGE = 'Date format must be YYYY-MM-DD'
+INVALID_TIME_MESSAGE = 'Time format must be hh:mm:ss'
+INVALID_LICENSE_PLATE_MESSAGE = 'License plate format must ABC-123'
+
 
 """
 Wrapper function that predicts if user can drive and prints the result
@@ -79,14 +83,12 @@ def predict(license_plate_arg, date_arg, time_arg):
     print('Restriction times: {0}-{1}, {2}-{3}'.format(START_FIRST_SHIFT, END_FIRST_SHIFT, 
                                                         START_SECOND_SHIFT, END_SECOND_SHIFT))
     
-    if len(digits) == 0: # A day with no restrictions
-        return True
-    
-    if int(license_plate_last_digit) not in digits:
+    if int(license_plate_last_digit) not in digits: 
+        # The day has no restrictions or the license plate is not restricted on that day
         return True
     else:
-        if (parsed_time >= START_TIME_FIRST_SHIFT and parsed_time < END_TIME_FIRST_SHIFT) or \
-            (parsed_time >= START_TIME_SECOND_SHIFT and parsed_time < END_TIME_SECOND_SHIFT):
+        if (START_TIME_FIRST_SHIFT <= parsed_time < END_TIME_FIRST_SHIFT) or \
+            (START_TIME_SECOND_SHIFT <= parsed_time < END_TIME_SECOND_SHIFT):
             return False
         else:
             return True
@@ -100,15 +102,15 @@ def validate_arguments(license_plate_arg, date_arg, time_arg):
     try:
         parsed_date = date.fromisoformat(date_arg)
     except Exception:
-        raise Exception('Date format must be YYYY-MM-DD')
+        raise Exception(INVALID_DATE_MESSAGE)
 
     try:
         parsed_time = strptime(time_arg, TIME_FORMAT)
     except Exception:
-        raise Exception('Time format must be hh:mm:ss')
+        raise Exception(INVALID_TIME_MESSAGE)
 
     if re.search(LICENSE_PLATE_REGEX, license_plate_arg) is None:
-        raise Exception('License plate format must ABC-123')
+        raise Exception(INVALID_LICENSE_PLATE_MESSAGE)
 
     return parsed_date, parsed_time, license_plate_arg[-1]
 
