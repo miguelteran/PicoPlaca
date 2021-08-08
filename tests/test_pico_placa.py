@@ -1,4 +1,10 @@
+import sys
+import os
 import unittest
+
+# To be able to import pico_placa module
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir)))
+
 from tests.test_utils import *
 from src.pico_placa import *
 
